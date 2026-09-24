@@ -1,0 +1,25 @@
+# --- Entorno ---
+.venv/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+
+# --- Spark / Docker del curso ---
+spark_practica/
+spark_practica.zip
+spark-warehouse/
+metastore_db/
+derby.log
+working_dir/
+output/
+output2/
+
+# --- Datos pesados (descargar del INE: https://www.ine.gob.gt/encuesta-nacional-de-empleo-e-ingresos/) ---
+data/*.xlsx
+!data/Diccionario-*.xlsx
+data/parquet/
+*.parquet
+*.zip
+*.csv
+*.sav

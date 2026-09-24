@@ -1,0 +1,9 @@
+pyspark==3.5.1
+pandas
+numpy
+pyarrow
+openpyxl
+matplotlib
+seaborn
+jupyter
+ipykernel
