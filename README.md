@@ -4,6 +4,8 @@ CC3066 – Data Science · Universidad del Valle de Guatemala
 
 Integrantes: Iris Ayala, Jonathan Díaz y Anggie Quezada
 
+**Repositorio Git:** <https://github.com/Qu3zada22/lab7-md>
+
 Todo el trabajo está en `lab7_eneic.ipynb`. Las instrucciones del laboratorio están en `docs/`.
 
 ## Requisitos
