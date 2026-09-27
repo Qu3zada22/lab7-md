@@ -1,7 +1,8 @@
+# Python 3.11
 pyspark==3.5.1
-pandas
-numpy
-pyarrow
+pandas<3
+numpy<2
+pyarrow<18
 openpyxl
 matplotlib
 seaborn

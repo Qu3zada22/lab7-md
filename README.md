@@ -10,6 +10,7 @@ Todo el trabajo está en `lab7_eneic.ipynb`. Las instrucciones del laboratorio e
 
 - Python 3.11
 - Java 17 (Spark 3.5 es compatible con Java 8, 11 y 17)
+- [uv](https://docs.astral.sh/uv/)
 - PySpark 3.5.1 y las librerías de `requirements.txt`
 
 ### Instalar Java 17
@@ -35,11 +36,12 @@ Windows: se recomienda usar WSL2 (Ubuntu) y seguir los pasos de Linux.
 Desde la carpeta del proyecto, en macOS, Linux o WSL:
 
 ```
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt "pandas<3" "numpy<2" "pyarrow<18"
-python -m ipykernel install --user --name lab7-venv --display-name "Python (.venv lab7)"
+uv python install 3.11
+uv venv --python 3.11
+uv run --python 3.11 --with-requirements requirements.txt python -c "import pyspark,pandas,numpy,pyarrow,openpyxl,matplotlib,seaborn; print(pyspark.__version__)"
 ```
+
+No es necesario activar el entorno: `uv run` usa `.venv` y resuelve las dependencias declaradas en `requirements.txt`.
 
 ## Datos
 
@@ -58,17 +60,26 @@ Solo se usan las bases de Personas. Deben guardarse en `data/` con estos nombres
 
 El diccionario `data/Diccionario-Personas-ENEIC-I-2026.xlsx` sí está en el repositorio.
 
-## Ejecutar
+## Ejecutar de forma interactiva
 
 ```
-source .venv/bin/activate
-jupyter lab
+uv run --python 3.11 --with-requirements requirements.txt jupyter lab
 ```
+
+## Ejecutar y verificar el notebook completo
+
+Cuando estén disponibles las cinco bases, ejecutar:
+
+```
+uv run --python 3.11 --with-requirements requirements.txt jupyter nbconvert --to notebook --execute lab7_eneic.ipynb --output lab7_eneic.executed.ipynb --output-dir /tmp --ExecutePreprocessor.timeout=-1
+```
+
+El archivo ejecutado se escribe en `/tmp` para no generar una salida temporal versionable dentro del repositorio. Las cinco bases deben estar disponibles en `data/` antes de ejecutar el comando.
 
 El notebook genera dos carpetas que no se suben al repositorio:
 
 - `data/parquet/`: los Excel convertidos a Parquet. La primera ejecución los crea; las siguientes los reutilizan y son más rápidas.
-- `modelos/`: los mejores modelos guardados (`lr_mejor` y `rf_mejor`).
+- `modelos/`: los modelos de selección (`lr_mejor` y `rf_mejor`) y los modelos finales (`lr_final_2025` y `rf_final_2025`).
 
 ## Avance
 
@@ -80,23 +91,13 @@ El notebook genera dos carpetas que no se suben al repositorio:
 | 4. Segmentación de perfiles mediante KMeans           | Listo     |
 | 5. Pipeline de regresión lineal                       | Listo     |
 | 6. Pipeline de Random Forest                          | Listo     |
-| 7. Entrenamiento final y evaluación en 2026           | Pendiente |
-| 8. Visualización y análisis de errores                | Pendiente |
+| 7. Entrenamiento final y evaluación en 2026           | Listo     |
+| 8. Visualización y análisis de errores                | Listo     |
 
-### Lo que falta
+### Resultados ejecutados
 
-Ejercicio 7:
+El notebook conserva los resultados de una ejecución integral con Python 3.11. Los modelos finales se entrenaron con los cuatro trimestres de 2025 y se evaluaron sobre los mismos 13,258 registros elegibles del primer trimestre de 2026.
 
-- Volver a entrenar las dos configuraciones elegidas con todo 2025 (`train_full`), usando `pipeline_lr(**mejor_lr)` y `pipeline_rf(**mejor_rf)`.
-- Predecir sobre 2026 (`test`) con los dos modelos, sobre exactamente los mismos registros.
-- Comparar MAE, RMSE y R² de los dos modelos y del modelo de referencia (media del salario de `train_full`) con la función `evaluar()`.
-
-Ejercicio 8:
-
-- Para cada modelo, una gráfica de salario real contra predicho con la línea y = x, y una de residuos contra predicho con una línea horizontal en 0. Usar la misma muestra de hasta 5,000 registros para los dos modelos.
-- Residuo = real − predicho (positivo = subestimación).
-- Tablas de MAE, error medio y número de observaciones por nivel educativo y por dominio, con todos los registros de prueba.
-- Análisis del error por percentiles de salario: ¿los modelos subestiman o sobreestiman los salarios altos?
-- Discusión final con todos los hallazgos.
-
-Variables disponibles de los ejercicios anteriores: `train`, `valid`, `train_full`, `test`, `evaluar()`, `NUMS`, `CATS`, `OBJETIVO`, `mejor_lr`, `mejor_rf`, `pipeline_lr()`, `pipeline_rf()` y `MODELOS_DIR`.
+- La actividad 7 compara la referencia, la regresión lineal y Random Forest con MAE, RMSE y R².
+- La actividad 8 incluye cuatro gráficos sobre una muestra común y reproducible de 5,000 registros.
+- Las tablas por nivel educativo, dominio y percentiles salariales usan todo el conjunto de prueba; la discusión final documenta los patrones de error y las limitaciones observadas.
